@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\Category;
+use App\Form\BookType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -35,30 +38,47 @@ class BookController extends AbstractController {
     }
 
     #[Route('/add', name: 'add')]
-    public function addBook(): Response {
+    public function addBook(Request $request): Response {
         $book = new Book();
-        $book
-            ->setTitle('Default book')
-            ->setAuthor('Default author')
-            ->setSummary('lorem Ipsum dolor sit amet')
-            ->setCover('build/images/bookCover.png')
-            //->setCategory($category)
-            ->setIsBorrow(false)
-        ;
 
-        $this->manager->persist($book);
+        $form = $this->createForm(BookType::class, $book);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->persist($book);
+            $this->manager->flush();
+
+            return $this->redirectToRoute('book_view');
+        }
+
+        return $this->render('book/add.html.twig', [
+            'bookForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/update/{id<\d+>}', name: 'update')]
+    public function updateBook(Book $book, Request $request): Response {
+
+        $form = $this->createForm(BookType::class, $book);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->flush();
+
+            return $this->redirectToRoute('book_view');
+        }
+
+        return $this->render('book/add.html.twig', [
+            'bookForm' => $form->createView(),
+        ]);
+    }
+
+    #[Route('/delete/{id<\d+>}', name: 'delete')]
+    public function deleteBook(Book $book): RedirectResponse {
+
+        $this->manager->remove($book);
         $this->manager->flush();
 
-        return $this->render('book/add.html.twig');
-    }
-
-    #[Route('/update', name: 'update')]
-    public function updateBook() {
-        return $this->render('book/update.html.twig');
-    }
-
-    #[Route('/delete', name: 'delete')]
-    public function deleteBook() {
-        return $this->render('book/delete.html.twig');
+        return $this->redirectToRoute('book_view');
     }
 }

@@ -4,8 +4,11 @@ namespace App\Controller;
 
 use App\Entity\Book;
 use App\Entity\Category;
+use App\Form\CategoryType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -31,17 +34,48 @@ class CategoryController extends AbstractController {
     }
 
     #[Route('/add', name: 'add')]
-    public function addCategory(): Response {
-        return $this->render('category/add.html.twig');
+    public function addCategory(Request $request): Response {
+
+        $category = new Category();
+
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->persist($category);
+            $this->manager->flush();
+
+            return $this->redirectToRoute('category_view');
+        }
+
+        return $this->render('category/add.html.twig', [
+            'categoryForm' => $form->createView(),
+        ]);
     }
 
-    #[Route('/update', name: 'update')]
-    public function updateCategory() {
-        return $this->render('category/update.html.twig');
+    #[Route('/update/{id<\d+>}', name: 'update')]
+    public function updateCategory(Category $category, Request $request): Response {
+
+        $form = $this->createForm(CategoryType::class, $category);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->manager->flush();
+
+            return $this->redirectToRoute('category_view');
+        }
+
+        return $this->render('category/add.html.twig', [
+            'categoryForm' => $form->createView(),
+        ]);
     }
 
-    #[Route('/delete', name: 'delete')]
-    public function deleteCategory() {
-        return $this->render('category/delete.html.twig');
+    #[Route('/delete/{id<\d+>}', name: 'delete')]
+    public function deleteCategory(Category $category): RedirectResponse {
+
+        $this->manager->remove($category);
+        $this->manager->flush();
+
+        return $this->redirectToRoute('category_view');
     }
 }
