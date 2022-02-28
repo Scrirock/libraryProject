@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Livres{% endblock %}
+
+{% block body %}
+
+    <div class="container start">
+        {% for book in books %}
+            <a href="{{ path('book_solo', {id: book.id}) }}" class="bookCard">
+                <img src="{{ asset(book.cover) }}" alt="couverture du livre">
+                <div class="summary">{{ book.summary }}</div>
+                <p class="title">{{ book.title }}</p>
+                <p class="author">{{ book.author }}</p>
+            </a>
+        {% endfor %}
+    </div>
+
+{% endblock %}

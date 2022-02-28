@@ -1,12 +1,24 @@
-/*
- * Welcome to your app's main JavaScript file!
- *
- * We recommend including the built version of this JavaScript file
- * (and its CSS file) in your base layout (base.html.twig).
- */
+import './styles/app.scss';
+import {CategoryAnimation} from "./js/CategoryAnimation";
+import {AdminMenu} from "./js/AdminMenu";
 
-// any CSS you import will output into a single css file (app.css in this case)
-import './styles/app.css';
+let box = document.querySelectorAll('.box');
 
-// start the Stimulus application
-import './bootstrap';
+for (let i = 0; i < box.length; i++) {
+    box[i].addEventListener('click', ()=>{
+        let animate = new CategoryAnimation(box[i]);
+        if (box[i].style.height === '30rem'){
+            setTimeout(function (){animate.appear()}, 500);
+            animate.smaller();
+            setTimeout(function (){animate.initial()}, 500);
+        }
+        else {
+            animate.disappear();
+            setTimeout(function (){animate.greater()}, 500);
+            animate.center();
+        }
+    })
+}
+
+AdminMenu.showMenu();
+AdminMenu.showSubMenu();

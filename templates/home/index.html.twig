@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}BiblioLivrEn─────{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+        {% for rack in racks %}
+            <a href="{{ path('rack_solo', {id: rack.id}) }}" class="rackName">{{ rack.name }}</a>
+        {% endfor %}
+    </div>
+
+{% endblock %}

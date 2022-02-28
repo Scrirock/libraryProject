@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Catégories{% endblock %}
+
+{% block body %}
+
+    <div class="container center">
+        {% for category in categories %}
+            <div class="box">
+                <p class="categoryName">{{ category.name }}</p>
+                <div class="booksDiv">
+                    <ul class="booksList">
+                        {% for book in books %}
+                            {% if category.id == book.category.id %}
+                                <li class="bookTitle">-> <a href="{{ path('book_solo', {id: book.id}) }}">{{ book.title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+{% endblock %}

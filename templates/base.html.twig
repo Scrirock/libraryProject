@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
+        <script src="https://kit.fontawesome.com/10b102adea.js" crossorigin="anonymous"></script>
         {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
         {% block stylesheets %}
             {{ encore_entry_link_tags('app') }}
@@ -13,6 +14,42 @@
             {{ encore_entry_script_tags('app') }}
         {% endblock %}
     </head>
+
+    <nav class="menu">
+        {% block nav %}
+
+            <i class="fa-solid fa-bars" id="burgerIcon"></i>
+            <div class="burger">
+                <div class="adminMenu">
+                    <div class="subMenu">
+                        <p class="hideButton linkButton">Ajouter</p>
+                        <a href="{{ path('category_add') }}" class="sub linkButton">Categories</a>
+                        <a href="{{ path('book_add') }}" class="sub linkButton">Livres</a>
+                    </div>
+                    <div class="subMenu">
+                        <p class="hideButton linkButton">Modifier</p>
+                        <a href="{{ path('category_update') }}" class="sub linkButton">Categories</a>
+                        <a href="{{ path('book_update') }}" class="sub linkButton">Livres</a>
+                    </div>
+                    <div class="subMenu">
+                        <p class="hideButton linkButton">Supprimer</p>
+                        <a href="{{ path('category_delete') }}" class="sub linkButton">Categories</a>
+                        <a href="{{ path('book_delete') }}" class="sub linkButton">Livres</a>
+                    </div>
+                </div>
+            </div>
+
+            <a href="{{ path('home') }}" class="linkButton">Étagères</a>
+            <a href="{{ path('category_view') }}" class="large linkButton">Catégories</a>
+            <a href="{{ path('book_view') }}" class="linkButton">Livres</a>
+
+            <div class="connexion">
+                <p>Se connecter</p>
+            </div>
+
+        {% endblock %}
+    </nav>
+
     <body>
         {% block body %}{% endblock %}
     </body>
